@@ -19,5 +19,6 @@ class TutsplusSpider(CrawlSpider):
             yield {
                 'title': tutorial.xpath(".//a[@class='posts__post-title ']/h1/text()").extract_first(),
                 'url': tutorial.xpath(".//a[@class='posts__post-title ']/@href").extract_first(),
-                'category': response.xpath(".//span[@class='content-banner__title-breadcrumb-category']/text()").extract_first()
+                'category': response.xpath(".//span[@class='content-banner__title-breadcrumb-category']/text()").extract_first(),
+                'user-agent': response.request.headers.get('User-Agent').decode('utf-8')
             }

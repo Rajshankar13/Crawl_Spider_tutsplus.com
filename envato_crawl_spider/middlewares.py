@@ -6,7 +6,25 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random, logging
 
+class UserAgentRotatorMiddleware(UserAgentMiddleware):
+    user_agent_lists = [
+        'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+    ]
+
+    def __init__(self, user_agent=''):
+        self.user_agent = user_agent
+
+    def process_request(self, request, spider):
+        try:
+            self.user_agent = random.choice(self.user_agent_lists)
+            request.headers.setdefault('User-Agent', self.user_agent)
+        except IndexError:
+            logging.error("Couldn't fetch the User Agent")
 
 class EnvatoCrawlSpiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
